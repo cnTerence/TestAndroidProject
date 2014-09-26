@@ -4,9 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import vargas.dgsd22.TestClass1;
 import vargas.dgsd22.android.db.ExpertContract;
 import vargas.dgsd22.fetcher.ExpertFetcher;
 import vargas.dgsd22.pojo.Expert;
+import vargas.dgsd22.prop.PropertyManagerExpert;
+import vargas.dgsd22.prop.PropertyManagerMatch;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -44,49 +47,60 @@ public class FirstActivity extends ActionBarActivity {
 	}
 	
 	public void fetchData(View view){
+		
+		PropertyManagerExpert.init();
+		PropertyManagerMatch.init();
 	
-		//step2 search last record *
-		ExpertContract ec = new ExpertContract(this);
-		Map<String, Expert> lastPubRec = ec.searchAllExpertLastRec();
-		
-		//step3 fetch data
-		ExpertFetcher fetcher = new ExpertFetcher();
-		List<Expert> newRec = fetcher.getAllPojo(lastPubRec);
-		
-		//step4 insert new record *
-		Iterator<String> keySetIterator = lastPubRec.keySet().iterator();  
-		while (keySetIterator.hasNext()) {  
-			String key = keySetIterator.next();  
-			ec.addExpertLastRec(lastPubRec.get(key));
-		}  
-		
-		int len = newRec.size();
-		String[] output = new String[len];
-		
-		int cnt;
-		for(cnt = 0; cnt < len; cnt++){
-			ec.addExpert(newRec.get(cnt));
-			output[cnt] = newRec.get(cnt).getUid() + " \r\n" +
-					newRec.get(cnt).getUname() + " \r\n" +
-					newRec.get(cnt).getDate() + " \r\n" +
-					newRec.get(cnt).getType() + " \r\n" +
-					newRec.get(cnt).getHost() + " \r\n" +
-					newRec.get(cnt).getGuest() + " \r\n" +
-					newRec.get(cnt).isResult() + " \r\n" +
-					newRec.get(cnt).getP() + " \r\n";
+		new Thread(
+			new Runnable() {
+				@Override
+				public void run() {
 					
-		}
-		ec.close();
-		
-		//step5 refresh view *
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.rowitem, output);
-		ListView list = (ListView)findViewById( R.id.ListView01 );
-		list.setAdapter(arrayAdapter);
-		
-		String result;
-		result = "total fetch: " + cnt + " new records. ";
-		
-		TextView tv = (TextView)findViewById(R.id.fetchResult);
-		tv.setText(result);
+					//step2 search last record *
+					ExpertContract ec = new ExpertContract(getApplicationContext());
+					Map<String, Expert> lastPubRec = ec.searchAllExpertLastRec();
+					
+					//step3 fetch data
+					ExpertFetcher fetcher = new ExpertFetcher();
+					List<Expert> newRec = fetcher.getAllPojo(lastPubRec);
+					
+					//step4 insert new record *
+					Iterator<String> keySetIterator = lastPubRec.keySet().iterator();  
+					while (keySetIterator.hasNext()) {  
+						String key = keySetIterator.next();  
+						ec.addExpertLastRec(lastPubRec.get(key));
+					}  
+					
+					int len = newRec.size();
+					String[] output = new String[len];
+					
+					int cnt;
+					for(cnt = 0; cnt < len; cnt++){
+						ec.addExpert(newRec.get(cnt));
+						output[cnt] = newRec.get(cnt).getUid() + " \r\n" +
+								newRec.get(cnt).getUname() + " \r\n" +
+								newRec.get(cnt).getDate() + " \r\n" +
+								newRec.get(cnt).getType() + " \r\n" +
+								newRec.get(cnt).getHost() + " \r\n" +
+								newRec.get(cnt).getGuest() + " \r\n" +
+								newRec.get(cnt).isResult() + " \r\n" +
+								newRec.get(cnt).getP() + " \r\n";
+								
+					}
+					ec.close();
+					
+					//step5 refresh view *
+//					ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.rowitem, output);
+//					ListView list = (ListView)findViewById( R.id.ListView01 );
+//					list.setAdapter(arrayAdapter);
+					
+					String result;
+					result = "total fetch: " + cnt + " new records. ";
+					
+					TextView tv = (TextView)findViewById(R.id.fetchResult);
+					tv.setText(result);
+				}
+			}
+		).start();
 	}
 }
