@@ -1,7 +1,9 @@
 package vargas.dgsd22.android.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import vargas.dgsd22.pojo.Expert;
 import android.content.ContentValues;
@@ -84,7 +86,7 @@ public class ExpertContract {
 		m_db.delete(ExpertLastRecEntry.TABLE_NAME, null, null);
 	}
 	
-	public List<Expert> searchAllExpertLastRec() {
+	public Map<String, Expert> searchAllExpertLastRec() {
 		Cursor c = 
 			m_db.query(ExpertEntry.TABLE_NAME, 
 				new String[]{
@@ -103,7 +105,7 @@ public class ExpertContract {
 				null, 
 				ExpertLastRecEntry.COLUMN_NAME_UID + ExpertDBHelper.DESC);
 		
-		List<Expert> rtnData = new ArrayList<Expert>();
+		Map<String, Expert> rtnData = new HashMap<String, Expert>();
 		Expert data = null;
 		int cnt;
 		int numRows = c.getCount();
@@ -119,7 +121,7 @@ public class ExpertContract {
 			data.setResult(Boolean.valueOf(c.getString(c.getColumnIndexOrThrow(ExpertLastRecEntry.COLUMN_NAME_RESULT))));
 			data.setP(c.getString(c.getColumnIndexOrThrow(ExpertLastRecEntry.COLUMN_NAME_P)));
 			
-			rtnData.add(data);
+			rtnData.put(data.getUid(), data);
 			c.moveToNext();
 		}
 		c.close();
