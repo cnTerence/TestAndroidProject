@@ -1,8 +1,6 @@
 package vargas.dgsd22.android;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import vargas.dgsd22.android.db.ExpertContract;
 import vargas.dgsd22.fetcher.ExpertFetcher;
@@ -61,29 +59,38 @@ public class FirstActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(String... params) {
 			
-			//step2 search last record *
-			ExpertContract ec = new ExpertContract(getApplicationContext());
-			Map<String, Expert> lastPubRec = ec.searchAllExpertLastRec();
-			
-			//step3 fetch data
+			//step1 fetch data
 			ExpertFetcher fetcher = new ExpertFetcher();
-			List<Expert> newRec = fetcher.getAllPojo(lastPubRec);
+			List<Expert> newRec = fetcher.getAllPojo();
 			
-			//step4 insert new record *
-			ec.deleteAllExpertLastRec();
-			Iterator<String> keySetIterator = lastPubRec.keySet().iterator();  
-			while (keySetIterator.hasNext()) {  
-				String key = keySetIterator.next();  
-				ec.addExpertLastRec(lastPubRec.get(key));
-			}  
-			
+			//step2 insert new record *
+			ExpertContract ec = new ExpertContract(getApplicationContext());
+
 			int len = newRec.size();
-			String[] output = new String[len];
-			
+			String key;
+			int newRecLen = 0;
 			int cnt;
+			
+			String output;
+			
 			for(cnt = 0; cnt < len; cnt++){
+				
+				key = newRec.get(cnt).getUid() + "$" +
+					newRec.get(cnt).getUname() + "$" +
+					newRec.get(cnt).getDate() + "$" +
+					newRec.get(cnt).getType() + "$" +
+					newRec.get(cnt).getHost() + "$" +
+					newRec.get(cnt).getGuest() + "$" +
+					newRec.get(cnt).isResult() + "$" +
+					newRec.get(cnt).getP();
+					
+				if(ec.searchExpert(newRec.get(cnt).getUid()).contains(key)){
+					continue;
+				}
+				
 				ec.addExpert(newRec.get(cnt));
-				output[cnt] = newRec.get(cnt).getUid() + " | " +
+				newRecLen = newRecLen + 1;
+				output = newRec.get(cnt).getUid() + " | " +
 						newRec.get(cnt).getUname() + " | " +
 						newRec.get(cnt).getDate() + " | " +
 						newRec.get(cnt).getType() + " | " +
@@ -92,13 +99,13 @@ public class FirstActivity extends ActionBarActivity {
 						newRec.get(cnt).isResult() + " | " +
 						newRec.get(cnt).getP() + "";
 				
-				System.out.println(output[cnt]);
+				System.out.println(output);
 						
 			}
 			ec.close();
 			
 			String result;
-			result = "total fetch: " + len + " new records. ";
+			result = "total fetch: " + newRecLen + " new records. ";
 			
 			return result;
 		}
