@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ public class ListAdapter extends BaseAdapter {
 	List<Map<String, String>> listData = new ArrayList<Map<String,String>>();
 	private LayoutInflater inflater;
 	
-	
+	public ListAdapter(Context context, Map map) {
+		inflater = LayoutInflater.from(context);
+	}
 
 	@Override
 	public int getCount() {
