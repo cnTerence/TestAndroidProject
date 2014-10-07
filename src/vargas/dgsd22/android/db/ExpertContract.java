@@ -139,4 +139,47 @@ public class ExpertContract {
 		
 		return rtnData;
 	}
+	
+	public List<Expert> searchExpertByType(String type) {
+		Cursor c = 
+			m_db.query(ExpertEntry.TABLE_NAME, 
+				new String[]{
+					ExpertEntry.COLUMN_NAME_UID,
+					ExpertEntry.COLUMN_NAME_UNAME,
+					ExpertEntry.COLUMN_NAME_DATE,
+					ExpertEntry.COLUMN_NAME_TYPE,
+					ExpertEntry.COLUMN_NAME_HOST,
+					ExpertEntry.COLUMN_NAME_GUEST,
+					ExpertEntry.COLUMN_NAME_RESULT,
+					ExpertEntry.COLUMN_NAME_P
+				}, 
+				ExpertEntry.COLUMN_NAME_TYPE + " = ?", 
+				new String[]{type}, 
+				null, 
+				null, 
+				ExpertEntry.COLUMN_NAME_UID + ExpertDBHelper.DESC);
+		
+		List<Expert> rtnData = new ArrayList<Expert>();
+		Expert data = null;
+		int cnt;
+		int numRows = c.getCount();
+		c.moveToFirst();
+		for(cnt = 0; cnt < numRows; cnt++){
+			data = new Expert();
+			data.setUid(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_UID)));
+			data.setUname(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_UNAME)));
+			data.setDate(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_DATE)));
+			data.setType(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_TYPE)));
+			data.setHost(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_HOST)));
+			data.setGuest(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_GUEST)));
+			data.setResult(Boolean.valueOf(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_RESULT))));
+			data.setP(c.getString(c.getColumnIndexOrThrow(ExpertEntry.COLUMN_NAME_P)));
+			
+			rtnData.add(data);
+			c.moveToNext();
+		}
+		c.close();
+		
+		return rtnData;
+	}
 }

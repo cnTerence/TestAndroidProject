@@ -1,6 +1,11 @@
 package vargas.dgsd22.android;
 
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import vargas.dgsd22.android.db.ExpertContract;
 import vargas.dgsd22.fetcher.ExpertFetcher;
@@ -10,9 +15,12 @@ import vargas.dgsd22.prop.PropertyManagerMatch;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class FirstActivity extends ActionBarActivity {
@@ -21,6 +29,12 @@ public class FirstActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first);
+		
+		Spinner spinner = (Spinner) findViewById(R.id.spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+		        R.array.type_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
 	}
 
 	@Override
@@ -44,17 +58,21 @@ public class FirstActivity extends ActionBarActivity {
 	
 	public void fetchData(View view){
 		
-		PropertyManagerExpert.init();
-		PropertyManagerMatch.init();
-	
-		new Thread(){  
-            public void run(){  
-                new AnotherTask().execute();  
-            }  
-        }.start();
+		//try{
+			PropertyManagerExpert.init();
+			PropertyManagerMatch.init();
+		
+			new Thread(){  
+	            public void run(){  
+	                new FetchDataTask().execute();  
+	            }  
+	        }.start();
+		//}catch(Exception e){
+		//	new AlertDialog.Builder(getApplicationContext()).setMessage(e.getMessage() + "\r\n" + e.getCause().toString()).setPositiveButton("ok", null).show();
+		//}
 	}
 	
-	private class AnotherTask extends AsyncTask<String, Void, String>{
+	private class FetchDataTask extends AsyncTask<String, Void, String>{
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -119,6 +137,143 @@ public class FirstActivity extends ActionBarActivity {
 			
 			TextView tv = (TextView)findViewById(R.id.fetchResult);
 			tv.setText(result);
+			tv.setMaxLines(10);
+			tv.setMovementMethod(ScrollingMovementMethod.getInstance());
+			tv.scrollTo(0, 0);
+			
+			//new AlertDialog.Builder(getApplicationContext()).setMessage("fetch complete").setPositiveButton("ok", null).show();
+		}
+	}
+	
+	public void sortData(View view){
+		
+		//try{
+			ExpertContract ec = new ExpertContract(getApplicationContext());
+			
+			Spinner spinner = (Spinner)findViewById(R.id.spinner);
+			if(spinner.getSelectedItem().toString().equals("ALL")){
+				List<Expert> allExperts = ec.searchAllExpert();
+				doSort(allExperts);
+			}else{
+				List<Expert> allExperts = ec.searchExpertByType(spinner.getSelectedItem().toString());
+				doSort(allExperts);
+			}
+		//}catch(Exception e){
+		//	new AlertDialog.Builder(getApplicationContext()).setMessage(e.getMessage() + "\r\n" + e.getCause().toString()).setPositiveButton("ok", null).show();
+		//}
+	}
+	
+	private void doSort(List<Expert> allExperts){
+		int len = allExperts.size();
+		int cnt;
+		Map<String, SortResult> sortResult = new HashMap<String, FirstActivity.SortResult>();
+		SortResult thisResult;
+		Expert thisExpert;
+		
+		if(allExperts.size() == 0){
+			TextView tv = (TextView)findViewById(R.id.fetchResult);
+			tv.setText("no data to sort.");
+			tv.setMaxLines(1);
+			tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
+			return;
+		}
+		
+		for(cnt = 0; cnt < len; cnt++){
+			thisExpert = allExperts.get(cnt);
+			if(sortResult.containsKey(thisExpert.getUid())){
+				thisResult = sortResult.get(thisExpert.getUid());
+			}else{
+				thisResult = new SortResult();
+				thisResult.setUid(thisExpert.getUid());
+				thisResult.setUname(thisExpert.getUname());
+				thisResult.setPct(0);
+				thisResult.setSum(0);
+				thisResult.setWin(0);
+			}
+			
+			if(thisExpert.isResult()){
+				thisResult.setWin(thisResult.getWin() + 1);
+			}
+			thisResult.setSum(thisResult.getSum() + 1);
+			thisResult.setPct((double)thisResult.getWin() / thisResult.getSum() * 100);
+			
+			sortResult.put(thisExpert.getUid(), thisResult);
+		}
+		
+		List<SortResult> finalResult = Arrays.asList(sortResult.values().toArray(new SortResult[]{}));
+		Collections.sort(finalResult);
+		
+		DecimalFormat dFormat = new DecimalFormat("#.00");
+		String output = "";
+		len = finalResult.size();
+		for(cnt = 0; cnt < len; cnt++){
+			output += finalResult.get(cnt).getUname() + "　|　" +
+					dFormat.format(finalResult.get(cnt).getPct()) + "　|　" +
+					finalResult.get(cnt).getWin() + "　|　" +
+					finalResult.get(cnt).getSum() + "\r\n\r\n";
+			
+		}
+		
+		TextView tv = (TextView)findViewById(R.id.fetchResult);
+		tv.setText(output);
+		tv.setMaxLines(len * 2);
+		tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
+		tv.scrollTo(0, 0);
+	}
+	
+	
+	private class SortResult implements Comparable<SortResult>{
+		private String uid;
+		private String uname;
+		private double pct;
+		private int win;
+		private int sum;
+		
+		public String getUid() {
+			return uid;
+		}
+		public void setUid(String uid) {
+			this.uid = uid;
+		}
+		public String getUname() {
+			return uname;
+		}
+		public void setUname(String uname) {
+			this.uname = uname;
+		}
+		public double getPct() {
+			return pct;
+		}
+		public void setPct(double pct) {
+			this.pct = pct;
+		}
+		public int getWin() {
+			return win;
+		}
+		public void setWin(int win) {
+			this.win = win;
+		}
+		public int getSum() {
+			return sum;
+		}
+		public void setSum(int sum) {
+			this.sum = sum;
+		}
+		@Override
+		public int compareTo(SortResult another) {
+			if(this.pct > another.pct){
+				return -1;
+			}else if(this.pct == another.pct){
+				if(this.sum > another.sum){
+					return -1;
+				}else if(this.sum == another.sum){
+					return 0;
+				}else{
+					return 1;
+				}
+			}else{
+				return 1;
+			}
 		}
 		
 		

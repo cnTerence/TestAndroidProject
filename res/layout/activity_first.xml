@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,28 +6,40 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="vargas.dgsd22.android.FirstActivity" >
 
 	<Button android:id="@+id/fetchData"
-	    android:layout_width="wrap_content"
+	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:text="@string/fetchData"
 	    android:onClick="fetchData"/>
 	
-	<TextView android:id="@+id/fetchResult"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"/>
-	
-	<ListView android:id="@+id/ListView01" 
+	<!--<ListView android:id="@+id/ListView01" 
 	    android:layout_width="wrap_content" 
 	    android:layout_height="wrap_content">
 	</ListView>
 	
-	<!-- <LinearLayout android:id="@+id/ListViewWrapper"
+	 <LinearLayout android:id="@+id/ListViewWrapper"
 	    android:orientation="vertical"
 	    android:background="#FFFFFF"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent">
 	</LinearLayout> -->
 	
-</RelativeLayout>
+	<Spinner android:id="@+id/spinner" 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"/>
+	
+	<Button android:id="@+id/sortData"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/sortData"
+	    android:onClick="sortData"/>
+	
+	<TextView android:id="@+id/fetchResult"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:scrollbars="vertical"/>
+		
+</LinearLayout>
