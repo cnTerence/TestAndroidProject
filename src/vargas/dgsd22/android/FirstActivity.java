@@ -207,9 +207,9 @@ public class FirstActivity extends ActionBarActivity {
 		String output = "";
 		len = finalResult.size();
 		for(cnt = 0; cnt < len; cnt++){
-			output += finalResult.get(cnt).getUname() + "｡｡|｡｡" +
-					dFormat.format(finalResult.get(cnt).getPct()) + "｡｡|｡｡" +
-					finalResult.get(cnt).getWin() + "｡｡|｡｡" +
+			output += finalResult.get(cnt).getUname() + "　|　" +
+					dFormat.format(finalResult.get(cnt).getPct()) + "　|　" +
+					finalResult.get(cnt).getWin() + "　|　" +
 					finalResult.get(cnt).getSum() + "\r\n\r\n";
 			
 		}
