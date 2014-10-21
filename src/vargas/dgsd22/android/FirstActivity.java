@@ -189,10 +189,14 @@ public class FirstActivity extends ActionBarActivity {
 				thisResult.setPct(0);
 				thisResult.setSum(0);
 				thisResult.setWin(0);
+				thisResult.setP(0);
+				thisResult.setSumP(0);
 			}
 			
 			if(thisExpert.isResult()){
 				thisResult.setWin(thisResult.getWin() + 1);
+				thisResult.setSumP(thisResult.getSumP() + Double.valueOf(thisExpert.getP().replace("SP:", "")));
+				thisResult.setP(thisResult.getSumP() / thisResult.getWin());
 			}
 			thisResult.setSum(thisResult.getSum() + 1);
 			thisResult.setPct((double)thisResult.getWin() / thisResult.getSum() * 100);
@@ -207,10 +211,12 @@ public class FirstActivity extends ActionBarActivity {
 		String output = "";
 		len = finalResult.size();
 		for(cnt = 0; cnt < len; cnt++){
-			output += finalResult.get(cnt).getUname() + "---|---" +
-					dFormat.format(finalResult.get(cnt).getPct()) + "---|---" +
-					finalResult.get(cnt).getWin() + "---|---" +
-					finalResult.get(cnt).getSum() + "\r\n\r\n";
+			output += finalResult.get(cnt).getUname() + "-|--" +
+					dFormat.format(finalResult.get(cnt).getPct()) + "-|--" +
+					finalResult.get(cnt).getWin() + "-|--" +
+					finalResult.get(cnt).getSum() + "-|--" +
+					dFormat.format(finalResult.get(cnt).getP()) + "-|--" +
+					dFormat.format(finalResult.get(cnt).getSumP()) + "\r\n\r\n";
 			
 		}
 		
@@ -222,12 +228,14 @@ public class FirstActivity extends ActionBarActivity {
 	}
 	
 	
-	private class SortResult implements Comparable<SortResult>{
+	public class SortResult implements Comparable<SortResult>{
 		private String uid;
 		private String uname;
 		private double pct;
 		private int win;
 		private int sum;
+		private double p;
+		private double sumP;
 		
 		public String getUid() {
 			return uid;
@@ -259,6 +267,18 @@ public class FirstActivity extends ActionBarActivity {
 		public void setSum(int sum) {
 			this.sum = sum;
 		}
+		public double getP() {
+			return p;
+		}
+		public void setP(double p) {
+			this.p = p;
+		}
+		public double getSumP() {
+			return sumP;
+		}
+		public void setSumP(double sumP) {
+			this.sumP = sumP;
+		}
 		@Override
 		public int compareTo(SortResult another) {
 			if(this.pct > another.pct){
@@ -267,7 +287,13 @@ public class FirstActivity extends ActionBarActivity {
 				if(this.sum > another.sum){
 					return -1;
 				}else if(this.sum == another.sum){
-					return 0;
+					if(this.p > another.p){
+						return -1;
+					}else if(this.p == another.p){
+						return 0;
+					}else{
+						return 1;
+					}
 				}else{
 					return 1;
 				}

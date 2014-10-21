@@ -7,24 +7,42 @@
     android:paddingRight="12dip"
     android:paddingBottom="4dip">
     
-    <TextView android:id="@+id/textViewRight"
+    <TextView android:id="@+id/textViewRightPct"
         android:layout_alignParentRight="true"
-        android:paddingTop="12dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30dip">
     </TextView>
     
-    <TextView android:id="@+id/textViewTop"
-        android:layout_width="fill_parent"
+    <TextView android:id="@+id/textViewRightP"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/textViewRightPct"
+        android:textSize="30dip">
+    </TextView>
+    
+    <TextView android:id="@+id/textViewTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/textViewRightP"
         android:textSize="20dip">
     </TextView>
     
-    <TextView android:id="@+id/textViewBottom"
-        android:layout_width="fill_parent"
+    <TextView android:id="@+id/textViewBottomPct"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewTop">
+        android:layout_toLeftOf="@+id/textViewRightP"
+        android:layout_below="@+id/textViewTop"
+        android:textSize="20dip">
+    </TextView>
+    
+    <TextView android:id="@+id/textViewBottomP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/textViewRightP"
+        android:layout_below="@+id/textViewBottomPct"
+        android:textSize="20dip">
     </TextView>
 
 </RelativeLayout>

@@ -4,7 +4,9 @@ import android.widget.TextView;
 
 public class ListItemViewHolder {
 
-	public TextView tvRight;
+	public TextView tvRightPct;
+	public TextView tvRightP;
 	public TextView tvTop;
-	public TextView tvBottom;
+	public TextView tvBottomPct;
+	public TextView tvBottomP;
 }
