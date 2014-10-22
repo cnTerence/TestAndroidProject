@@ -1,48 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listItemLayout"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="12dip"
-    android:paddingRight="12dip"
-    android:paddingBottom="4dip">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
     
     <TextView android:id="@+id/textViewRightPct"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:textSize="30dip">
+        android:textSize="16sp"
+        android:textColor="@drawable/black">"
     </TextView>
     
     <TextView android:id="@+id/textViewRightP"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/textViewRightPct"
         android:layout_toLeftOf="@+id/textViewRightPct"
-        android:textSize="30dip">
+        android:textSize="16sp"
+        android:textColor="@drawable/black">
     </TextView>
     
     <TextView android:id="@+id/textViewTop"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/textViewRightP"
         android:layout_toLeftOf="@+id/textViewRightP"
-        android:textSize="20dip">
+        android:textSize="14sp"
+        android:textColor="@drawable/black">
     </TextView>
     
     <TextView android:id="@+id/textViewBottomPct"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/textViewRightP"
         android:layout_toLeftOf="@+id/textViewRightP"
         android:layout_below="@+id/textViewTop"
-        android:textSize="20dip">
+        android:textSize="12sp"
+        android:textColor="@drawable/gray">
     </TextView>
     
     <TextView android:id="@+id/textViewBottomP"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/textViewRightP"
         android:layout_toLeftOf="@+id/textViewRightP"
         android:layout_below="@+id/textViewBottomPct"
-        android:textSize="20dip">
+        android:textSize="12sp"
+        android:textColor="@drawable/gray">
     </TextView>
 
 </RelativeLayout>

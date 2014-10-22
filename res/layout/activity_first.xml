@@ -15,18 +15,6 @@
 	    android:text="@string/fetchData"
 	    android:onClick="fetchData"/>
 	
-	<!--<ListView android:id="@+id/ListView01" 
-	    android:layout_width="wrap_content" 
-	    android:layout_height="wrap_content">
-	</ListView>
-	
-	 <LinearLayout android:id="@+id/ListViewWrapper"
-	    android:orientation="vertical"
-	    android:background="#FFFFFF"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">
-	</LinearLayout> -->
-	
 	<Spinner android:id="@+id/spinner" 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"/>
@@ -37,9 +25,20 @@
 	    android:text="@string/sortData"
 	    android:onClick="sortData"/>
 	
-	<TextView android:id="@+id/fetchResult"
+	<Button android:id="@+id/sortData2"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:scrollbars="vertical"/>
+	    android:text="@string/sortData2"
+	    android:onClick="sortData2"/>
+	
+	<LinearLayout android:id="@+id/LinearLayout01"
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent"
+        android:orientation="vertical"/>
+	
+	<!-- <TextView android:id="@+id/fetchResult"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:scrollbars="vertical"/> -->
 		
 </LinearLayout>

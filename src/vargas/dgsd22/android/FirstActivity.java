@@ -16,10 +16,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -220,11 +223,127 @@ public class FirstActivity extends ActionBarActivity {
 			
 		}
 		
-		TextView tv = (TextView)findViewById(R.id.fetchResult);
+		LayoutInflater inflater  = LayoutInflater.from(getApplicationContext());
+		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.result_text, null).findViewById(R.id.txtViewLayout);
+		TextView tv = (TextView)layout.getChildAt(0);
 		tv.setText(output);
 		tv.setMaxLines(len * 2);
 		tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
 		tv.scrollTo(0, 0);
+		
+		LinearLayout lin = (LinearLayout)findViewById(R.id.LinearLayout01);
+		lin.removeAllViews();
+		lin.addView(layout);
+		
+//		TextView tv = (TextView)findViewById(R.id.fetchResult);
+//		tv.setText(output);
+//		tv.setMaxLines(len * 2);
+//		tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
+//		tv.scrollTo(0, 0);
+	}
+	
+	
+	
+	
+	public void sortData2(View view){
+		
+		//try{
+			ExpertContract ec = new ExpertContract(getApplicationContext());
+			
+			Spinner spinner = (Spinner)findViewById(R.id.spinner);
+			if(spinner.getSelectedItem().toString().equals("ALL")){
+				List<Expert> allExperts = ec.searchAllExpert();
+				doSort2(allExperts);
+			}else{
+				List<Expert> allExperts = ec.searchExpertByType(spinner.getSelectedItem().toString());
+				doSort2(allExperts);
+			}
+		//}catch(Exception e){
+		//	new AlertDialog.Builder(getApplicationContext()).setMessage(e.getMessage() + "\r\n" + e.getCause().toString()).setPositiveButton("ok", null).show();
+		//}
+	}
+	
+	private void doSort2(List<Expert> allExperts){
+		int len = allExperts.size();
+		int cnt;
+		Map<String, SortResult> sortResult = new HashMap<String, FirstActivity.SortResult>();
+		SortResult thisResult;
+		Expert thisExpert;
+		
+		LayoutInflater inflater  = LayoutInflater.from(getApplicationContext());
+		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.result_text, null).findViewById(R.id.txtViewLayout);
+		TextView tv = (TextView)layout.getChildAt(0);
+		LinearLayout lin = (LinearLayout)findViewById(R.id.LinearLayout01);
+		
+		if(allExperts.size() == 0){
+//			TextView tv = (TextView)findViewById(R.id.fetchResult);
+			tv.setText("no data to sort.");
+			tv.setMaxLines(1);
+			tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
+			lin.removeAllViews();
+			lin.addView(layout);
+			return;
+		}
+		
+		for(cnt = 0; cnt < len; cnt++){
+			thisExpert = allExperts.get(cnt);
+			if(sortResult.containsKey(thisExpert.getUid())){
+				thisResult = sortResult.get(thisExpert.getUid());
+			}else{
+				thisResult = new SortResult();
+				thisResult.setUid(thisExpert.getUid());
+				thisResult.setUname(thisExpert.getUname());
+				thisResult.setPct(0);
+				thisResult.setSum(0);
+				thisResult.setWin(0);
+				thisResult.setP(0);
+				thisResult.setSumP(0);
+			}
+			
+			if(thisExpert.isResult()){
+				thisResult.setWin(thisResult.getWin() + 1);
+				thisResult.setSumP(thisResult.getSumP() + Double.valueOf(thisExpert.getP().replace("SP:", "")));
+				thisResult.setP(thisResult.getSumP() / thisResult.getWin());
+			}
+			thisResult.setSum(thisResult.getSum() + 1);
+			thisResult.setPct((double)thisResult.getWin() / thisResult.getSum() * 100);
+			
+			sortResult.put(thisExpert.getUid(), thisResult);
+		}
+		
+		List<SortResult> finalResult = Arrays.asList(sortResult.values().toArray(new SortResult[]{}));
+		Collections.sort(finalResult);
+		
+		DecimalFormat dFormat = new DecimalFormat("#.00");
+		len = finalResult.size();
+		for(cnt = 0; cnt < len; cnt++){
+			
+			if(".00".equals(dFormat.format(finalResult.get(cnt).getPct()))){
+				finalResult.get(cnt).setPct(0.00);
+			}else{
+				finalResult.get(cnt).setPct(Double.valueOf(dFormat.format(finalResult.get(cnt).getPct())));
+			}
+			
+			if(".00".equals(dFormat.format(finalResult.get(cnt).getP()))){
+				finalResult.get(cnt).setP(0.00);
+			}else{
+				finalResult.get(cnt).setP(Double.valueOf(dFormat.format(finalResult.get(cnt).getP())));
+			}
+			
+			if(".00".equals(dFormat.format(finalResult.get(cnt).getSumP()))){
+				finalResult.get(cnt).setSumP(0.00);
+			}else{
+				finalResult.get(cnt).setSumP(Double.valueOf(dFormat.format(finalResult.get(cnt).getSumP())));
+			}			
+		}
+		
+		LinearLayout layout2 = (LinearLayout)inflater.inflate(R.layout.list_view, null).findViewById(R.id.listViewLayout);
+		ListView lv = (ListView)layout2.getChildAt(0);
+		lv.setAdapter(new ListAdapter(getApplicationContext(), finalResult));
+		
+		lin.removeAllViews();
+		lin.addView(layout2);
+		
 	}
 	
 	
