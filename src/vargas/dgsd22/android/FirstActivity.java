@@ -138,11 +138,18 @@ public class FirstActivity extends ActionBarActivity {
 //			ListView list = (ListView)findViewById( R.id.ListView01 );
 //			list.setAdapter(arrayAdapter);
 			
-			TextView tv = (TextView)findViewById(R.id.fetchResult);
+			LayoutInflater inflater  = LayoutInflater.from(getApplicationContext());
+			LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.result_text, null).findViewById(R.id.txtViewLayout);
+			
+			TextView tv = (TextView)layout.getChildAt(0);
+			LinearLayout lin = (LinearLayout)findViewById(R.id.LinearLayout01);
+			
 			tv.setText(result);
 			tv.setMaxLines(10);
 			tv.setMovementMethod(ScrollingMovementMethod.getInstance());
 			tv.scrollTo(0, 0);
+			lin.removeAllViews();
+			lin.addView(layout);
 			
 			//new AlertDialog.Builder(getApplicationContext()).setMessage("fetch complete").setPositiveButton("ok", null).show();
 		}
@@ -173,11 +180,19 @@ public class FirstActivity extends ActionBarActivity {
 		SortResult thisResult;
 		Expert thisExpert;
 		
+		LayoutInflater inflater  = LayoutInflater.from(getApplicationContext());
+		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.result_text, null).findViewById(R.id.txtViewLayout);
+		
+		TextView tv = (TextView)layout.getChildAt(0);
+		LinearLayout lin = (LinearLayout)findViewById(R.id.LinearLayout01);
+		
 		if(allExperts.size() == 0){
-			TextView tv = (TextView)findViewById(R.id.fetchResult);
+//			TextView tv = (TextView)findViewById(R.id.fetchResult);
 			tv.setText("no data to sort.");
 			tv.setMaxLines(1);
 			tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
+			lin.removeAllViews();
+			lin.addView(layout);
 			return;
 		}
 		
@@ -223,15 +238,11 @@ public class FirstActivity extends ActionBarActivity {
 			
 		}
 		
-		LayoutInflater inflater  = LayoutInflater.from(getApplicationContext());
-		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.result_text, null).findViewById(R.id.txtViewLayout);
-		TextView tv = (TextView)layout.getChildAt(0);
 		tv.setText(output);
 		tv.setMaxLines(len * 2);
 		tv.setMovementMethod(ScrollingMovementMethod.getInstance()); 
 		tv.scrollTo(0, 0);
 		
-		LinearLayout lin = (LinearLayout)findViewById(R.id.LinearLayout01);
 		lin.removeAllViews();
 		lin.addView(layout);
 		
